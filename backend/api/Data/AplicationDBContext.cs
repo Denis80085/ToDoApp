@@ -16,15 +16,6 @@ namespace api.Data
         }
 
         public DbSet<ToDoModel> ToDos { get; set; }
-        public DbSet<DeadLineModel> DeadLines { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<ToDoModel>()
-            .HasOne(d => d.DeadLine)
-            .WithOne(x => x.ToDo)
-            .HasForeignKey<ToDoModel>(d => d.DeadLineId)
-            .IsRequired(false);
-        }
     }
 }

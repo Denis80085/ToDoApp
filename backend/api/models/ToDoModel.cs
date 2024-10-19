@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,9 +14,9 @@ namespace api.models
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public string State { get; set; } = "In progres";
 
-        //One to One
-        public int? DeadLineId { get; set; }
-        public DeadLineModel? DeadLine { get; set; }  
+        public DateOnly? FromDate { get; set; }
+
+        public DateOnly? ToDate { get; set; }
 
         //One to Many
         //public string UserId { get; set; } = string.Empty; will add soon!!!!!!
