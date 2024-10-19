@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.ToDoDtos;
+using api.Helpers;
 using api.Interfaces;
 using api.models;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<ToDoModel> CreateToDo(CreateToDoDto createToDo)
+        public async Task<ToDoModel> CreateToDo(CreateToDoDto createToDo, ToDoQuerryObject querryObject)
         {
             ToDoModel ToDo = new ToDoModel
             {
@@ -27,6 +28,15 @@ namespace api.Repository
                 Task = createToDo.Task,
                 State = createToDo.State
             };
+
+            if(querryObject.WithDeadline)
+            {
+                if(querryObject.ToDate != null & querryObject.FromDate !=  null)
+                {
+                    ToDo.FromDate = querryObject.FromDate;
+                    ToDo.ToDate = querryObject.ToDate;
+                }
+            }
 
             await _context.ToDos.AddAsync(ToDo);
             await _context.SaveChangesAsync();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.ToDoDtos;
+using api.Helpers;
 using api.models;
 
 namespace api.Interfaces
@@ -11,6 +12,6 @@ namespace api.Interfaces
     {
         Task<List<ToDoModel>> GetAllToDo();
 
-        Task<ToDoModel> CreateToDo(CreateToDoDto createToDo);
+        Task<ToDoModel> CreateToDo(CreateToDoDto createToDo, ToDoQuerryObject querryObject);
     }
 }
