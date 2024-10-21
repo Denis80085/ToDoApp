@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    [Migration("20241019131816_ToDoTable")]
-    partial class ToDoTable
+    [Migration("20241021162827_DateTime")]
+    partial class DateTime
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

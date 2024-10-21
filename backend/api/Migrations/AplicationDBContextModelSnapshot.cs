@@ -33,8 +33,8 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateOnly?>("FromDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("FromDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("State")
                         .IsRequired()
@@ -48,8 +48,8 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly?>("ToDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("ToDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

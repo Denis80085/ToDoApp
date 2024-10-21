@@ -12,6 +12,8 @@ namespace api.Interfaces
     {
         Task<List<ToDoModel>> GetAllToDo();
 
-        Task<ToDoModel> CreateToDo(CreateToDoDto createToDo, ToDoQuerryObject querryObject);
+        Task<ToDoModel?> CreateToDo(CreateToDoDto createToDo, ToDoQuerryObject querryObject);
+
+        Task<ToDoModel?> DeleteToDo(int id);
     }
 }

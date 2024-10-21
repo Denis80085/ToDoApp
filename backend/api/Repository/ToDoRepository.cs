@@ -20,7 +20,7 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<ToDoModel> CreateToDo(CreateToDoDto createToDo, ToDoQuerryObject querryObject)
+        public async Task<ToDoModel?> CreateToDo(CreateToDoDto createToDo, ToDoQuerryObject querryObject)
         {
             ToDoModel ToDo = new ToDoModel
             {
@@ -38,10 +38,26 @@ namespace api.Repository
                 }
             }
 
+            if(ToDo.FromDate > ToDo.ToDate) return null;
+
             await _context.ToDos.AddAsync(ToDo);
             await _context.SaveChangesAsync();
 
             return ToDo;
+        }
+
+        public async Task<ToDoModel?> DeleteToDo(int id)
+        {
+            var ToDoModel = await _context.ToDos.FirstOrDefaultAsync(d => d.Id == id);
+
+            if(ToDoModel != null)
+            {
+                _context.ToDos.Remove(ToDoModel);
+                
+                await _context.SaveChangesAsync();
+            }
+
+            return ToDoModel;
         }
 
         public async Task<List<ToDoModel>> GetAllToDo()
