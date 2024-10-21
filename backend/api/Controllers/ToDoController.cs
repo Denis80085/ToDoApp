@@ -59,5 +59,31 @@ namespace api.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            try
+            {
+                if(!ModelState.IsValid) 
+                    return BadRequest(ModelState);
+
+                var ToDoModel = await _ToDoRepo.DeleteToDo(id);
+
+                if(ToDoModel == null)
+                {
+                    return BadRequest($"ToDo with id = {id} could not be found");
+                }
+                else
+                {
+                    return Ok(ToDoModel);
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }
