@@ -31,7 +31,7 @@ namespace api.Controllers
             }
             catch(Exception e)
             {
-                Debug.WriteLine(e.ToString());
+                Debug.WriteLine("!!!!!!!!!Warnind Exception" + e.ToString());
                 return StatusCode(500, e.ToString());
             }
 
@@ -55,7 +55,7 @@ namespace api.Controllers
             }
             catch(Exception e)
             {
-                Debug.WriteLine(e.Message);
+                Debug.WriteLine("!!!!!!!!!Warnind Exception" + e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -81,8 +81,35 @@ namespace api.Controllers
             }
             catch(Exception e)
             {
-                Debug.WriteLine(e.Message);
+                Debug.WriteLine("!!!!!!!!!Warnind Exception" + e.Message);
                 return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateToDoDto updateDTO, [FromQuery] ToDoQuerryObject querryObject)
+        {
+            try
+            {
+                if(!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                
+                var UpdatedToDo = await _ToDoRepo.UpdateToDo(id, updateDTO, querryObject);
+
+                if(UpdatedToDo != null)
+                {
+                    return Ok(UpdatedToDo);
+                }
+                else
+                {
+                    return BadRequest("The to do could not be updated");
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine("!!!!!!!!!Warnind Exception" + e.Message);
+                return StatusCode(500, e);
             }
         }
     }
