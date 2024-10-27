@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    [Migration("20241018193032_ToDo")]
-    partial class ToDo
+    [Migration("20241021162827_DateTime")]
+    partial class DateTime
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,28 +24,6 @@ namespace api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("api.models.DeadLineModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("FromDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ToDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ToDoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DeadLines");
-                });
 
             modelBuilder.Entity("api.models.ToDoModel", b =>
                 {
@@ -58,8 +36,8 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DeadLineId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("FromDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("State")
                         .IsRequired()
@@ -73,28 +51,12 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ToDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("DeadLineId")
-                        .IsUnique()
-                        .HasFilter("[DeadLineId] IS NOT NULL");
-
                     b.ToTable("ToDos");
-                });
-
-            modelBuilder.Entity("api.models.ToDoModel", b =>
-                {
-                    b.HasOne("api.models.DeadLineModel", "DeadLine")
-                        .WithOne("ToDo")
-                        .HasForeignKey("api.models.ToDoModel", "DeadLineId");
-
-                    b.Navigation("DeadLine");
-                });
-
-            modelBuilder.Entity("api.models.DeadLineModel", b =>
-                {
-                    b.Navigation("ToDo")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
