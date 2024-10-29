@@ -2,6 +2,7 @@ using api.Data;
 using api.Interfaces;
 using api.models;
 using api.Repository;
+using api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
@@ -57,7 +58,7 @@ builder.Services.AddAuthentication(Options =>
 });
 
 builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
-
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 
 builder.Services.AddControllers().AddNewtonsoftJson(Options => 
