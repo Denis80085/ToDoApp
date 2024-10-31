@@ -7,6 +7,7 @@ using api.Interfaces;
 using api.models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -18,24 +19,56 @@ namespace api.Controllers
 
         private readonly ITokenService _TokenService;
 
-        public AccountController(UserManager<AppUser> UserManager, ITokenService TokenService)
+        private readonly SignInManager<AppUser> _signInManager;
+
+        public AccountController(UserManager<AppUser> UserManager, ITokenService TokenService, SignInManager<AppUser> signInManager)
         {
             _UserManager = UserManager;
             _TokenService = TokenService;
+            _signInManager = signInManager;
         }
 
-        [HttpPost("test")]
-        public IActionResult TestingTokenCreate()
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var user = new AppUser
+            try
             {
-                UserName = "ItsMeMario",
-                Email = "mario666@ggg.com"
-            };
+                if(!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-            var token = _TokenService.CreateToken(user);
+                var user = await _UserManager.Users.FirstOrDefaultAsync(u => u.Email == loginDto.UserNameOrEmail);
 
-            return Ok(token);
+                user ??= await _UserManager.Users.FirstOrDefaultAsync(u => u.UserName == loginDto.UserNameOrEmail);
+
+                if(user != null)
+                {
+                    var result =  await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+
+                    if(result.Succeeded)
+                    {
+                        return Ok(new NewUserDto
+                        {
+                            UserName = user.UserName,
+                            Email = user.Email,
+                            Token = _TokenService.CreateToken(user)
+                        });
+                    }
+                    else
+                    {
+                        return Unauthorized("Login failed. Wrong Password and/or Username or Email.");
+                    }
+                }
+                else
+                {
+                    return Unauthorized("Login failed. Wrong Password and/or Username or Email.");
+                }
+            }
+            catch(Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpPost("register")]
