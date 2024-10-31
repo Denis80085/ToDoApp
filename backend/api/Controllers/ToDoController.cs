@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using api.Dtos.ToDoDtos;
 using api.Helpers;
 using api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -21,6 +22,7 @@ namespace api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -38,6 +40,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create([FromBody] CreateToDoDto createToDo, [FromQuery] ToDoQuerryObject querryObject)
         {
             try
@@ -61,6 +64,7 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
@@ -87,6 +91,7 @@ namespace api.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateToDoDto updateDTO, [FromQuery] ToDoQuerryObject querryObject)
         {
             try

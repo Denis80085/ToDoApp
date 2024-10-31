@@ -10,10 +10,10 @@ namespace api.Dtos.UserAccount
     {
         [Required]
         [EmailAddress]
-        public string Email { get; set; } = string.Empty;
+        public string? Email { get; set; } = string.Empty;
         [Required]
         [MinLength(5, ErrorMessage = "User Name must contain at least 5 characters")]
-        public string UserName { get; set; } = string.Empty;
+        public string? UserName { get; set; } = string.Empty;
 
         [Required]
         public string Token { get; set; } = string.Empty;
