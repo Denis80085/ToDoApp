@@ -88,6 +88,7 @@ builder.Services.AddAuthentication(Options =>
 
 builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 
 
 builder.Services.AddControllers().AddNewtonsoftJson(Options => 

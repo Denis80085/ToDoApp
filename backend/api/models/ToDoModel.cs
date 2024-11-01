@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace api.models
 {
+    [Table("ToDos")]
     public class ToDoModel
     {
         [Required]
@@ -24,7 +26,6 @@ namespace api.models
 
         public DateTime? ToDate { get; set; }
 
-        //One to Many
-        //public string UserId { get; set; } = string.Empty; will add soon!!!!!!
+        public List<Portfolio>? Portfolios { get; set; }
     }
 }

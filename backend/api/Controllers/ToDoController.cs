@@ -4,9 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.ToDoDtos;
+using api.Extentions;
 using api.Helpers;
 using api.Interfaces;
+using api.models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -16,9 +19,14 @@ namespace api.Controllers
     public class ToDoController : ControllerBase
     {
         private IToDoRepository _ToDoRepo;
-        public ToDoController(IToDoRepository ToDoRepo)
+        private UserManager<AppUser> _userManager;
+        private IPortfolioRepository _PortfolioRepo;
+
+        public ToDoController(IToDoRepository ToDoRepo, UserManager<AppUser> userManager, IPortfolioRepository PortfolioRepo)
         {
             _ToDoRepo = ToDoRepo;
+            _userManager = userManager;
+            _PortfolioRepo = PortfolioRepo;
         }
 
         [HttpGet]
@@ -45,16 +53,40 @@ namespace api.Controllers
         {
             try
             {
-                //To Do: make sure that to date is grather than from date
                 if(!ModelState.IsValid) 
                     return BadRequest(ModelState);
 
+                string? UserName = User.GetUserName();
+
+                if(UserName == null)
+                {
+                    return NotFound("User could not be found");
+                }
+
+                AppUser? appUser = await _userManager.FindByNameAsync(UserName);
+
+                if(appUser == null)
+                {
+                    return NotFound("User could not be found");
+                }
+
                 var ToDo = await _ToDoRepo.CreateToDo(createToDo, querryObject);
 
-                if(ToDo == null) 
-                    return StatusCode(500, "ToDo could not be created");
+                if(ToDo != null)
+                {
+                    var portfolio  = await _PortfolioRepo.CreatePortfolio(ToDo.Id, appUser);
 
-                return Ok(ToDo);
+                    if(portfolio == null)
+                    {
+                        return StatusCode(500, "Your ToDo could not be added to portfolio");
+                    }
+
+                    return Ok(ToDo);
+                }
+                else
+                {
+                    return StatusCode(500, "ToDo could not be created");
+                }                       
             }
             catch(Exception e)
             {
