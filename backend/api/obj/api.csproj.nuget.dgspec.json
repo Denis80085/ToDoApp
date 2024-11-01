@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\ToDoAspNet\\ToDoApp\\backend\\api\\api.csproj": {}
+    "D:\\ToDoAspNet\\ToDoApp\\backend\\api\\api.csproj": {}
   },
   "projects": {
-    "d:\\ToDoAspNet\\ToDoApp\\backend\\api\\api.csproj": {
+    "D:\\ToDoAspNet\\ToDoApp\\backend\\api\\api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\ToDoAspNet\\ToDoApp\\backend\\api\\api.csproj",
+        "projectUniqueName": "D:\\ToDoAspNet\\ToDoApp\\backend\\api\\api.csproj",
         "projectName": "api",
-        "projectPath": "d:\\ToDoAspNet\\ToDoApp\\backend\\api\\api.csproj",
+        "projectPath": "D:\\ToDoAspNet\\ToDoApp\\backend\\api\\api.csproj",
         "packagesPath": "C:\\Users\\denis\\.nuget\\packages\\",
-        "outputPath": "d:\\ToDoAspNet\\ToDoApp\\backend\\api\\obj\\",
+        "outputPath": "D:\\ToDoAspNet\\ToDoApp\\backend\\api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\denis\\AppData\\Roaming\\NuGet\\NuGet.Config"

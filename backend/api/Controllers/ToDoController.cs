@@ -7,6 +7,7 @@ using api.Dtos.ToDoDtos;
 using api.Extentions;
 using api.Helpers;
 using api.Interfaces;
+using api.Mappers.ToDoMapers;
 using api.models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -37,7 +38,7 @@ namespace api.Controllers
             {
                 var ToDos = await _ToDoRepo.GetAllToDo();
 
-                return Ok(ToDos);
+                return Ok(ToDos.Select(d => d.MapToDoDto()).ToList());
             }
             catch(Exception e)
             {
@@ -81,7 +82,7 @@ namespace api.Controllers
                         return StatusCode(500, "Your ToDo could not be added to portfolio");
                     }
 
-                    return Ok(ToDo);
+                    return Ok(ToDo.MapToDoDto());
                 }
                 else
                 {
@@ -112,7 +113,7 @@ namespace api.Controllers
                 }
                 else
                 {
-                    return Ok(ToDoModel);
+                    return Ok(ToDoModel.MapToDoDto());
                 }
             }
             catch(Exception e)
@@ -136,7 +137,7 @@ namespace api.Controllers
 
                 if(UpdatedToDo != null)
                 {
-                    return Ok(UpdatedToDo);
+                    return Ok(UpdatedToDo.MapToDoDto());
                 }
                 else
                 {
