@@ -32,11 +32,24 @@ namespace api.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll() //ToDo: get all complited tasks
         {
             try
             {
-                var ToDos = await _ToDoRepo.GetAllToDo();
+                var UserName = User.GetUserName();
+                if(UserName == null)
+                {
+                    return Unauthorized("User not found");
+                }
+
+                var user =  await _userManager.FindByNameAsync(UserName);
+
+                if(user == null)
+                {
+                    return Unauthorized("User not found");
+                }
+
+                var ToDos = await _PortfolioRepo.GetPortfolios(user);
 
                 return Ok(ToDos.Select(d => d.MapToDoDto()).ToList());
             }
@@ -104,6 +117,24 @@ namespace api.Controllers
             {
                 if(!ModelState.IsValid) 
                     return BadRequest(ModelState);
+                
+                var UserName = User.GetUserName();
+                if(UserName == null)
+                {
+                    return Unauthorized("User not found");
+                }
+
+                var user =  await _userManager.FindByNameAsync(UserName);
+
+                if(user == null)
+                {
+                    return Unauthorized("User not found");
+                }
+
+                if(!await _PortfolioRepo.UserHasToDoId(id, user))
+                {
+                    return BadRequest($"No ToDo with id = {id} was found");
+                }
 
                 var ToDoModel = await _ToDoRepo.DeleteToDo(id);
 
@@ -132,7 +163,25 @@ namespace api.Controllers
                 if(!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                var UserName = User.GetUserName();
                 
+                if(UserName == null)
+                {
+                    return Unauthorized("User not found");
+                }
+
+                var user =  await _userManager.FindByNameAsync(UserName);
+
+                if(user == null)
+                {
+                    return Unauthorized("User not found");
+                }
+
+                if(!await _PortfolioRepo.UserHasToDoId(id, user))
+                {
+                    return BadRequest($"No ToDo with id = {id} was found");
+                }
+
                 var UpdatedToDo = await _ToDoRepo.UpdateToDo(id, updateDTO, querryObject);
 
                 if(UpdatedToDo != null)

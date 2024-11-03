@@ -9,18 +9,26 @@ namespace api.Mappers.ToDoMapers
 {
     public static class ToDoMapper
     {
-        public static ToDoDto? MapToDoDto(this ToDoModel toDoModel)
+        public static ToDoDto? MapToDoDto(this ToDoModel? toDoModel)
         {
-            return new ToDoDto
+            if(toDoModel == null)
             {
-                Id = toDoModel.Id,
-                Titel = toDoModel.Titel,
-                Task = toDoModel.Task,
-                CreatedOn = toDoModel.CreatedOn,
-                State = toDoModel.State,
-                FromDate = toDoModel.FromDate,
-                ToDate = toDoModel.ToDate
-            };
+                return null;
+            }
+            else
+            {
+                return new ToDoDto
+                {
+                    Id = toDoModel.Id,
+                    Titel = toDoModel.Titel,
+                    Task = toDoModel.Task,
+                    CreatedOn = toDoModel.CreatedOn,
+                    State = toDoModel.State,
+                    FromDate = toDoModel.FromDate,
+                    ToDate = toDoModel.ToDate
+                };
+            }
+            
         }
     }
 }

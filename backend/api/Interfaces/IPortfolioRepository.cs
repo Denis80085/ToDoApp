@@ -9,5 +9,9 @@ namespace api.Interfaces
     public interface IPortfolioRepository
     {
         Task<Portfolio?> CreatePortfolio(int ToDoId, AppUser User);
+
+        Task<List<ToDoModel?>> GetPortfolios(AppUser User);
+
+        Task<bool> UserHasToDoId(int id, AppUser User);
     }
 }

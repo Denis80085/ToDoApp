@@ -9,6 +9,7 @@ using api.models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repository
 {
@@ -51,6 +52,24 @@ namespace api.Repository
                 Debug.WriteLine("!!!!!Error" + e.Message);
                 return null;
             }
+            
+        }
+
+        public async Task<List<ToDoModel?>> GetPortfolios(AppUser User)
+        {
+            return await _context.Portfolios.Where(p => p.UserId == User.Id).Select(p => p.ToDo).ToListAsync();
+        }
+
+        public async Task<bool> UserHasToDoId(int id, AppUser User)
+        {
+            var UserToDos = await GetPortfolios(User);
+            
+            if(UserToDos == null)
+            {
+                return false;
+            }
+
+            return UserToDos.Any(d => d.Id == id);
             
         }
     }
