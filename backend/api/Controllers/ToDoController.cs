@@ -4,9 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.ToDoDtos;
+using api.Extentions;
 using api.Helpers;
 using api.Interfaces;
+using api.Mappers.ToDoMapers;
+using api.models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -16,20 +20,38 @@ namespace api.Controllers
     public class ToDoController : ControllerBase
     {
         private IToDoRepository _ToDoRepo;
-        public ToDoController(IToDoRepository ToDoRepo)
+        private UserManager<AppUser> _userManager;
+        private IPortfolioRepository _PortfolioRepo;
+
+        public ToDoController(IToDoRepository ToDoRepo, UserManager<AppUser> userManager, IPortfolioRepository PortfolioRepo)
         {
             _ToDoRepo = ToDoRepo;
+            _userManager = userManager;
+            _PortfolioRepo = PortfolioRepo;
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll() //ToDo: get all complited tasks
         {
             try
             {
-                var ToDos = await _ToDoRepo.GetAllToDo();
+                var UserName = User.GetUserName();
+                if(UserName == null)
+                {
+                    return Unauthorized("User not found");
+                }
 
-                return Ok(ToDos);
+                var user =  await _userManager.FindByNameAsync(UserName);
+
+                if(user == null)
+                {
+                    return Unauthorized("User not found");
+                }
+
+                var ToDos = await _PortfolioRepo.GetPortfolios(user);
+
+                return Ok(ToDos.Select(d => d.MapToDoDto()).ToList());
             }
             catch(Exception e)
             {
@@ -45,16 +67,40 @@ namespace api.Controllers
         {
             try
             {
-                //To Do: make sure that to date is grather than from date
                 if(!ModelState.IsValid) 
                     return BadRequest(ModelState);
 
+                string? UserName = User.GetUserName();
+
+                if(UserName == null)
+                {
+                    return NotFound("User could not be found");
+                }
+
+                AppUser? appUser = await _userManager.FindByNameAsync(UserName);
+
+                if(appUser == null)
+                {
+                    return NotFound("User could not be found");
+                }
+
                 var ToDo = await _ToDoRepo.CreateToDo(createToDo, querryObject);
 
-                if(ToDo == null) 
-                    return StatusCode(500, "ToDo could not be created");
+                if(ToDo != null)
+                {
+                    var portfolio  = await _PortfolioRepo.CreatePortfolio(ToDo.Id, appUser);
 
-                return Ok(ToDo);
+                    if(portfolio == null)
+                    {
+                        return StatusCode(500, "Your ToDo could not be added to portfolio");
+                    }
+
+                    return Ok(ToDo.MapToDoDto());
+                }
+                else
+                {
+                    return StatusCode(500, "ToDo could not be created");
+                }                       
             }
             catch(Exception e)
             {
@@ -71,6 +117,24 @@ namespace api.Controllers
             {
                 if(!ModelState.IsValid) 
                     return BadRequest(ModelState);
+                
+                var UserName = User.GetUserName();
+                if(UserName == null)
+                {
+                    return Unauthorized("User not found");
+                }
+
+                var user =  await _userManager.FindByNameAsync(UserName);
+
+                if(user == null)
+                {
+                    return Unauthorized("User not found");
+                }
+
+                if(!await _PortfolioRepo.UserHasToDoId(id, user))
+                {
+                    return BadRequest($"No ToDo with id = {id} was found");
+                }
 
                 var ToDoModel = await _ToDoRepo.DeleteToDo(id);
 
@@ -80,7 +144,7 @@ namespace api.Controllers
                 }
                 else
                 {
-                    return Ok(ToDoModel);
+                    return Ok(ToDoModel.MapToDoDto());
                 }
             }
             catch(Exception e)
@@ -99,12 +163,30 @@ namespace api.Controllers
                 if(!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                var UserName = User.GetUserName();
                 
+                if(UserName == null)
+                {
+                    return Unauthorized("User not found");
+                }
+
+                var user =  await _userManager.FindByNameAsync(UserName);
+
+                if(user == null)
+                {
+                    return Unauthorized("User not found");
+                }
+
+                if(!await _PortfolioRepo.UserHasToDoId(id, user))
+                {
+                    return BadRequest($"No ToDo with id = {id} was found");
+                }
+
                 var UpdatedToDo = await _ToDoRepo.UpdateToDo(id, updateDTO, querryObject);
 
                 if(UpdatedToDo != null)
                 {
-                    return Ok(UpdatedToDo);
+                    return Ok(UpdatedToDo.MapToDoDto());
                 }
                 else
                 {

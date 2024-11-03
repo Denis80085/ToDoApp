@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    [Migration("20241029130130_IdentityRoles")]
-    partial class IdentityRoles
+    [Migration("20241101071553_Portfolios")]
+    partial class Portfolios
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,13 +54,13 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f9c9084d-498b-4b94-aa0b-c04db2825577",
+                            Id = "224db4a3-ca70-4d3e-9974-7b7b86e23719",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "116ac07b-05a9-4c52-b797-b25124e73b84",
+                            Id = "2ffe8638-899f-46a1-ac49-80d1a3efb459",
                             Name = "user",
                             NormalizedName = "USER"
                         });
@@ -237,6 +237,21 @@ namespace api.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("api.models.Portfolio", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ToDoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "ToDoId");
+
+                    b.HasIndex("ToDoId");
+
+                    b.ToTable("Portfolios");
+                });
+
             modelBuilder.Entity("api.models.ToDoModel", b =>
                 {
                     b.Property<int>("Id")
@@ -322,6 +337,35 @@ namespace api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("api.models.Portfolio", b =>
+                {
+                    b.HasOne("api.models.ToDoModel", "ToDo")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("ToDoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.models.AppUser", "User")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ToDo");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("api.models.AppUser", b =>
+                {
+                    b.Navigation("Portfolios");
+                });
+
+            modelBuilder.Entity("api.models.ToDoModel", b =>
+                {
+                    b.Navigation("Portfolios");
                 });
 #pragma warning restore 612, 618
         }
