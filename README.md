@@ -29,6 +29,8 @@ You can change the http address in launchSettings.json file in Properties folder
 
 ## Setup instructions
 If you would like to run this project folow this steps:
+1) Got to `ToDoApp/backend/api/appsettings.json` and write a Connectionstring to a Microsoft SQL Server(Section `"ConnectionStrings":"DefaultConnection"`, line 4).
+   Example: `"DefaultConnection"`:`"Data Source={PCName}\\SQLEXPRESS;Initial Catalog={DataBaseName};Persist Security Info=True;User ID=sa;Password={Password};Pooling=False;Encrypt=True;Trust Server Certificate=True"`
 1) Got to `ToDoApp/backend/api/appsettings.json` and write a Connectionstring to a Microsoft SQL Server(Section `"ConnectionStrings":"DefaultConnection"`, line 4)
 2) also in appsettings.json fill the section `"JWT":"SignInKey"` line 18 with a long Key(at least 64 characters)
 3) if you set another http/https address in `launchSettings.json` dont forget to paste it at `"JWT":"Issuer"` line 16 and `"JWT":"Audience"` line 17.
